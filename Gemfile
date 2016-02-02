@@ -21,7 +21,6 @@ gem 'puma'
 
 gem 'react-rails'
 gem 'flux-rails-assets'
-gem 'react-router-rails'
 gem 'bootstrap-sass'
 gem 'sass-rails'
 # Use ActiveModel has_secure_password
