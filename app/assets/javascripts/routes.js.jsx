@@ -2,7 +2,7 @@ this.App = React.createClass({
   mixins: [ReactRouter.History],
   componentDidMount: function(){
     debugger;
-    this.history.pushState(null,"/login")
+    this.history.pushState(null,"/new")
   },
   render: function() {
     return <div><p>New Component</p>
