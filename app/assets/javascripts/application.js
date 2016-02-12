@@ -16,4 +16,5 @@
 //= require react_ujs
 //= require ReactRouter.min
 //= require components
+//= require action_cable
 //= require_tree .
