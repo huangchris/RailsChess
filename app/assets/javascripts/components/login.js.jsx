@@ -19,10 +19,19 @@
     },
 
     login: function(){
+      var data = this.state;
+      $.post({
+        url: "/users",
+        data: data,
+      }).success(this.createSocket) //promises?
+    },
+
+    createSocket: function(){
       root.Cable = ActionCable.createConsumer();
       this.props.updateState(this.state);
       this.history.pushState("","/home");
     },
+
     render: function(){
       return <div >Enter a username:
         <input id="name" type="text"

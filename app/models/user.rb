@@ -11,5 +11,8 @@
 #
 
 class User < ApplicationRecord
+  def login
+    update(session_token: SecureRandom.urlsafe_base64, online: true)
+  end
   
 end

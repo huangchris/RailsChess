@@ -13,13 +13,13 @@
       }
     },
     componentWillUnmount: function(){
-      debugger;
-      this.ChatChannel && this.ChatChannel.disconnected() && this.ChatChannel.unsubscribe();
+      console.log("unmount lobby")
+      this.ChatChannel && this.ChatChannel.logout() && this.chatChannel.unsubscribe();
+      // the order these events are happening is causing a small problem (warning).
+      delete this.chatChannel;
     },
     watchForSubmit: function(e){
-      debugger;
       if(e.key === 'Enter'){
-        debugger;
         e.preventDefault();
         this.ChatChannel.speak(e.target.value);
       }
