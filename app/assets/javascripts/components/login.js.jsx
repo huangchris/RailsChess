@@ -23,7 +23,7 @@
       $.post({
         url: "/users",
         data: data,
-      }).success(this.createSocket) //promises?
+      }).success(this.createSocket) //promises? yes!
     },
 
     createSocket: function(){

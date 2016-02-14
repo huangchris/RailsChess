@@ -30,6 +30,7 @@ MyRoutes = (
   <Router>
     <Route path = "/" component={App}>
       <Route path="new" component={Login}/>
+      <Route path="lobby" component={Lobby}></Route>
       <Route path="home" component={Lobby}></Route>
       <Route path="/game" component={Game}></Route>
     </Route>

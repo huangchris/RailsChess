@@ -1,6 +1,8 @@
 function joinChat(reactLobby){
   return Cable.subscriptions.create("ChatChannel",{
-    connected: function(){},
+    connected: function(){
+      this.perform('update_user_list')
+    },
     disconnected: function(){},
 
     received: function(data){
@@ -10,11 +12,16 @@ function joinChat(reactLobby){
           reactLobby.setState({messages: reactLobby.state.messages.concat(data.message)});
           break;
         case 'login':
-          reactLobby.setState({users: data.message})
+        var messages = reactLobby.state.messages.concat([{message: data.message + " has logged in"}])
+        var users = reactLobby.state.users.concat([data.message])
+          reactLobby.setState({users: users, messages: messages})
           break;
         case 'logout':
-          newUserList = spliceLoggedOut(reactLobby.state.users, data.message)
-          message = reactLobby.state.messages.concat([{message: data.message + "has logged out"}])
+          var newUserList = spliceLoggedOut(reactLobby.state.users, data.message)
+          var messages = reactLobby.state.messages.concat([{message: data.message + " has logged out"}])
+          reactLobby.setState({users: newUserList, messages: messages})
+          break;
+        case 'users':
           reactLobby.setState({users: data.message})
           break;
       }
@@ -28,7 +35,6 @@ function joinChat(reactLobby){
   });
 }
 function spliceLoggedOut(list, user){
-  debugger;
   var userList = list.slice();
   var index = userList.indexOf(user);
   userList.splice(index);
