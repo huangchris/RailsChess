@@ -5,10 +5,11 @@ class ChatChannel < ApplicationCable::Channel
 
   def subscribed
     stream_from 'messages'
-    # users = User.where(online: true).pluck(:username)
+    stream_from "user#{current_user.username}"
+    current_user.update(online: true)
     ActionCable.server.broadcast('messages', action: 'login',
       message: current_user.username)
-      # update_user_list
+      update_user_list #was in `connected` on client side, but doesn't get called after 1st time for some reason.
       # users: users) # only send the new user.
   end
 
@@ -21,6 +22,31 @@ class ChatChannel < ApplicationCable::Channel
 
   def speak(data)
     ActionCable.server.broadcast('messages', action: 'speak', message:data)
+  end
+
+  def challenge(data)
+    ActionCable.server.broadcast("user#{data['recipient']}", action: 'challenge', message:data)
+  end
+
+  def challenge_response(data)
+    # if users agree, set a gameID for both of them. Will need to set up a stream when they move on.
+    # use this challenge_response broadcast to make the respondent switch pages as well.
+    if data['response']
+      gameId = SecureRandom::urlsafe_base64
+      User.find_by(username: data['users']['sender']).update(game_id: gameId)
+      User.find_by(username: data['users']['recipient']).update(game_id: gameId)
+      # is there a User.where(username: "x OR y")?
+      ActionCable.server.broadcast("user#{data['users']['sender']}",
+        action: 'challenge_response',
+        message:data)
+      ActionCable.server.broadcast("user#{data['users']['recipient']}",
+        action: 'challenge_response',
+        message:data)
+    else
+      ActionCable.server.broadcast("user#{data['users']['sender']}",
+        action: 'challenge_response',
+        message:data)
+    end
   end
 
   def logout

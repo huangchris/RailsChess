@@ -13,14 +13,18 @@
     componentDidMount: function(){
       if (this.props.name === ""){
         this.history.pushState("","/new")
-      }else{
+      }else if(typeof this.ChatChannel === 'undefined'){
         this.ChatChannel = joinChat(this);
       }
+      $(window).unload(function(){
+        this.ChatChannel && this.ChatChannel.unsubscribe();
+      }.bind(this))
     },
     componentWillUnmount: function(){
       console.log("unmount lobby")
       this.ChatChannel && this.ChatChannel.unsubscribe() && delete this.chatChannel;
       // the order these events are happening is causing a small problem (warning).
+      $(window).off('unload')
     },
     watchForSubmit: function(e){
       if(e.key === 'Enter'){
@@ -30,21 +34,29 @@
       }
     },
     issueChallenge: function(e){
-      this.setState({challenged: e.target.dataset.id})
+      this.setState({makeChallenge: e.target.dataset.id})
       e.preventDefault();
     },
     unChallenge: function(e){
       e.preventDefault();
-      this.setState({challenged: null});
+      this.setState({makeChallenge: null});
+    },
+    acceptChallenge:function(){
+      this.ChatChannel.perform('challenge_response', {users: this.state.challenged, response: true})
+      this.setState({challenged: false});
+    },
+    declineChallenge:function(){
+      this.ChatChannel.perform('challenge_response', {users: this.state.challenged, response: false})
+      this.setState({challenged: false});
     },
     render: function(){
       var users = this.state.users.sort().map(function(user,idx){
-        if (this.state.challenged === user){
+        if (this.state.makeChallenge === user){
           return <li key={"usr"+idx}>
             <a data-id={user} href="#lobby" onClick={this.unChallenge}>{user}</a>
             <Challenge user={user}
                         self={this.props.name}
-                        channel={this.chatChannel}
+                        channel={this.ChatChannel}
                         unChallenge={this.unChallenge}></Challenge>
           </li>
         }else if(this.props.name === user){
@@ -58,7 +70,16 @@
       var messages = this.state.messages.map(function(message,idx){
         return <li key={"msg" + idx}>{message.sender}<p>{message.message}</p></li>
       })
+      if(this.state.challenged){
+        // this should be a subcomponent... and used for all sorts of notifications
+        var challenge =<div>
+          <strong>You've been challenged by {this.state.challenged.sender}!</strong>
+          <button onClick={this.acceptChallenge}>Accept</button>
+          <button onClick={this.declineChallenge}>Decline</button>
+          </div>
+      }
       return <div>
+        {challenge}
         <div>Users online:</div>
         <ul>{users}</ul>
         <div>Messages:</div>
