@@ -6,9 +6,9 @@
       return {messages: [], users: []}
     },
     componentWillMount: function(){
-      if(this.props.name === ""){
-        this.history.pushState(null,"/new")
-      }
+      // if(this.props.name === ""){
+      //   this.history.pushState(null,"/new")
+      // }
     },
     componentDidMount: function(){
       if (this.props.name === ""){

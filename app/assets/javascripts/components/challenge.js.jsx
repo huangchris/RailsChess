@@ -7,7 +7,6 @@
     // props: user:(username), channel(chatChannel)
     issueChallenge: function(){
       console.log("Challenge issued");
-      debugger;
       this.props.channel.perform('challenge', {sender: this.props.self, recipient: this.props.user});
       this.setState({cSent: true})
     },
