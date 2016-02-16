@@ -1,5 +1,3 @@
-
-
 class GameChannel < ApplicationCable::Channel
   def subscribed
     current_user.reload
@@ -31,7 +29,7 @@ class GameChannel < ApplicationCable::Channel
         message: data)
     else
       ActionCable.server.broadcast("game#{current_user.game_id}",
-        action: 'invalid move')
+        action: 'Not your turn')
     end
   end
 

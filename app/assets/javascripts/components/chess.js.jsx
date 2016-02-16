@@ -8,7 +8,7 @@
       var colLetters = {0:"A", 1: "B", 2:"C", 3:"D", 4:"E",5:"F",6:"G",7:"H"}
       return [0,1,2,3,4,5,6,7].map(function(i){
         var piece = (this.props.board[rowNum][i]) ?
-          this.props.board[rowNum][i] :
+          this.props.board[rowNum][i].toString :
           null;
         var selected = (this.state.selected &&
                         this.state.selected[0] === rowNum &&
@@ -36,7 +36,11 @@
         if(fromPos[0] !== toPos[0] || fromPos[1] !== toPos[1]){
           // this.props.board[toPos[0]][toPos[1]] = this.pieces[fromPos[0]][fromPos[1]];
           // this.pieces[fromPos[0]][fromPos[1]] = null;
-          this.props.channel.play({fromPos: fromPos, toPos: toPos})
+          if(this.props.board[fromPos[0]][fromPos[1]].validMove(fromPos, toPos, this.props.board)){
+            this.props.channel.play({fromPos: fromPos, toPos: toPos})
+          }else{
+            console.log("invalid move");
+          }
         }
         this.setState({selected: null});
       }else if(this.props.board[toPos[0]][toPos[1]]){

@@ -7,15 +7,40 @@
     },
     makeStartingBoard:function(){
       var board = [];
-      var pawns = ["P","P","P","P","P","P","P","P"];
-      var backRow = ["R","N","B","Q","K","B","N","R"];
-      board.push(backRow.slice())
-      board.push(pawns.slice())
+      var whitePawns = [];
+      for (var i = 0; i < 8; i++) {
+        whitePawns.push(new Pawn('white'))
+      }
+      var blackPawns = [];
+      for (var i = 0; i < 8; i++) {
+        blackPawns.push(new Pawn('black'))
+      }
+      var whiteRow = [];
+        whiteRow.push(new Rook('white'))
+        whiteRow.push(new Knight('white'))
+        whiteRow.push(new Bishop('white'))
+        whiteRow.push(new Queen('white'))
+        whiteRow.push(new King('white'))
+        whiteRow.push(new Bishop('white'))
+        whiteRow.push(new Knight('white'))
+        whiteRow.push(new Rook('white'))
+
+      var blackRow = []
+        blackRow.push(new Rook('black'))
+        blackRow.push(new Knight('black'))
+        blackRow.push(new Bishop('black'))
+        blackRow.push(new Queen('black'))
+        blackRow.push(new King('black'))
+        blackRow.push(new Bishop('black'))
+        blackRow.push(new Knight('black'))
+        blackRow.push(new Rook('black'))
+      board.push(whiteRow);
+      board.push(whitePawns);
       for (var i = 0; i < 4; i++) {
         board.push([])
-      }
-      board.push(pawns.slice())
-      board.push(backRow.slice())
+      } // push 4 blank rows
+      board.push(blackPawns);
+      board.push(blackRow);
       return board;
     },
     componentWillMount: function(){
@@ -25,11 +50,11 @@
         this.GameChannel = joinGame(this); //probably need to pass component to channel
       }
       $(window).unload(function(){
-        debugger;
         this.GameChannel && this.GameChannel.unsubscribe();
       }.bind(this))
     },
     componentWillUnmount:function(){
+      this.GameChannel && this.GameChannel.unsubscribe() && delete this.GameChannel;
       $(window).off('unload')
     },
     updateBoard:function(data){
