@@ -11,8 +11,12 @@
 #
 
 class User < ApplicationRecord
+  def game # I don't know why belongs_to is requiring it to exist
+    Game.find(game_id)
+  end
+
   def login
     update(session_token: SecureRandom.urlsafe_base64, online: true)
   end
-  
+
 end

@@ -32,10 +32,8 @@ class ChatChannel < ApplicationCable::Channel
     # if users agree, set a gameID for both of them. Will need to set up a stream when they move on.
     # use this challenge_response broadcast to make the respondent switch pages as well.
     if data['response']
-      gameId = SecureRandom::urlsafe_base64
-      User.find_by(username: data['users']['sender']).update(game_id: gameId)
-      User.find_by(username: data['users']['recipient']).update(game_id: gameId)
-      # is there a User.where(username: "x OR y")?
+      users_names = [data['users']['sender'], data['users']['recipient']]
+      game = Game.make(User.where(username: users_names).shuffle)
       ActionCable.server.broadcast("user#{data['users']['sender']}",
         action: 'challenge_response',
         message:data)

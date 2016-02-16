@@ -4,24 +4,16 @@
     getInitialState: function(){
       return {selected: null};
     },
-    componentWillMount:function(){
-      this.pieces = [];
-      this.pieces.push(["R","N","B","Q","K","B","N","R"])
-      this.pieces.push(["P","P","P","P","P","P","P","P"])
-      for (var i = 0; i < 4; i++) {
-        this.pieces.push([])
-      }
-      this.pieces.push(["P","P","P","P","P","P","P","P"])
-      this.pieces.push(["R","N","B","Q","K","B","N","R"])
-    },
     makeRow: function(rowNum){
       var colLetters = {0:"A", 1: "B", 2:"C", 3:"D", 4:"E",5:"F",6:"G",7:"H"}
       return [0,1,2,3,4,5,6,7].map(function(i){
-        var piece = (this.pieces[rowNum][i]) ?
-          this.pieces[rowNum][i] :
+        var piece = (this.props.board[rowNum][i]) ?
+          this.props.board[rowNum][i] :
           null;
-        var selected = (this.state.selected && this.state.selected[0] === rowNum && this.state.selected[1] === i) ?
-          "selected-square" : ""
+        var selected = (this.state.selected &&
+                        this.state.selected[0] === rowNum &&
+                        this.state.selected[1] === i) ?
+                        "selected-square" : ""
         if((rowNum + i) % 2 === 0){
           return <div data-pos={[rowNum,i]}
                       className={"black-square " + selected}
@@ -42,11 +34,12 @@
       if (this.state.selected){ // and myTurn === true
         var fromPos = this.state.selected;
         if(fromPos[0] !== toPos[0] || fromPos[1] !== toPos[1]){
-          this.pieces[toPos[0]][toPos[1]] = this.pieces[fromPos[0]][fromPos[1]];
-          this.pieces[fromPos[0]][fromPos[1]] = null; // this isn't updating this.board.
+          // this.props.board[toPos[0]][toPos[1]] = this.pieces[fromPos[0]][fromPos[1]];
+          // this.pieces[fromPos[0]][fromPos[1]] = null;
+          this.props.channel.play({fromPos: fromPos, toPos: toPos})
         }
         this.setState({selected: null});
-      }else{
+      }else if(this.props.board[toPos[0]][toPos[1]]){
         this.setState({selected: toPos})
       }
     },
@@ -54,10 +47,10 @@
       // if(this.board){
       //   return this.board;
       // }else{
-        this.board = [0,1,2,3,4,5,6,7].map(function(i){
+        this.display = [0,1,2,3,4,5,6,7].map(function(i){
           return <div className="board-row" key={"row"+i}>{this.makeRow(i)}</div>
         }.bind(this)).reverse();
-        return this.board;
+        return this.display;
       // }
     },
     render: function(){

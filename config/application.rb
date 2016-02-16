@@ -12,5 +12,8 @@ module Chess
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.react.addons = true
+    config.after_initialize do
+      User.update_all(online: false)
+    end
   end
 end
