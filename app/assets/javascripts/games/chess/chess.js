@@ -18,16 +18,17 @@ var Pawn = function(color){
 
 Pawn.prototype.validMove = function(fromPos, toPos, board){
   // row, column
+  //pawns can jump pieces right now?
   if (this.color === "white"){
     if (toPos[0] === fromPos[0] + 1 || (fromPos[0] === 1 && toPos[0] === 3 && fromPos[1] === toPos[1])){
-      return fromPos[1] === toPos[1] ||
+      return (fromPos[1] === toPos[1] && !board[toPos[0]][toPos[1]])||
         (board[toPos[0]][toPos[1]] &&
           Math.abs(fromPos[1] - toPos[1]) === 1 &&
           board[toPos[0]][toPos[1]].color !== this.color)
     }
   }else{
     if (toPos[0] === fromPos[0] - 1 || (fromPos[0] === 6 && toPos[0] === 4 && fromPos[1] === toPos[1])){
-      return fromPos[1] === toPos[1] ||
+      return (fromPos[1] === toPos[1] && !board[toPos[0]][toPos[1]])||
         (board[toPos[0]][toPos[1]] &&
           Math.abs(fromPos[1] - toPos[1]) === 1 &&
           board[toPos[0]][toPos[1]].color !== this.color)
@@ -41,7 +42,8 @@ var Rook = function(color){
   this.toString = (color === "white" ? "♖" : "♜" );
 }
 Rook.prototype.validMove = function(fromPos, toPos, board){
-  return (fromPos[0] === toPos[0] || fromPos[1] === toPos[1])
+  return (fromPos[0] === toPos[0] || fromPos[1] === toPos[1]) &&
+  (!board[toPos[0]][toPos[1]] || board[toPos[0]][toPos[1]].color !== this.color)
   // figure out piece jumping later -- scan across all points between the two for pieces
 }
 
@@ -64,7 +66,9 @@ var Bishop = function(color){
 }
 
 Bishop.prototype.validMove = function(fromPos, toPos, board){
-  return Math.abs(fromPos[0] - toPos[0]) === Math.abs(fromPos[1] - toPos[1]);
+  return Math.abs(fromPos[0] - toPos[0]) === Math.abs(fromPos[1] - toPos[1]) &&
+  (!board[toPos[0]][toPos[1]] || board[toPos[0]][toPos[1]].color !== this.color);
+  // no jumping or taking own pieces
 }
 
 var Queen = function(color){
@@ -73,8 +77,8 @@ var Queen = function(color){
 }
 
 Queen.prototype.validMove = function(fromPos, toPos, board){
-  return Bishop.prototype.validMove(fromPos, toPos, board) ||
-    Rook.prototype.validMove(fromPos, toPos, board);
+  return (Bishop.prototype.validMove.call(this,fromPos, toPos, board) ||
+    Rook.prototype.validMove.call(this,fromPos, toPos, board))
 }
 
 var King = function(color){
@@ -83,5 +87,6 @@ var King = function(color){
 }
 
 King.prototype.validMove = function(fromPos, toPos, board){
-  return Math.abs(fromPos[0] - toPos[0]) < 2 && Math.abs(fromPos[1] - toPos[1]) < 2
+  return (Math.abs(fromPos[0] - toPos[0]) < 2 && Math.abs(fromPos[1] - toPos[1]) < 2) &&
+    (!board[toPos[0]][toPos[1]] || board[toPos[0]][toPos[1]].color !== this.color)
 }

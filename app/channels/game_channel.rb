@@ -9,15 +9,14 @@ class GameChannel < ApplicationCable::Channel
     @opponent = @game.players.select {|player| player != current_user}.first
     ActionCable.server.broadcast("game#{current_user.game_id}",
       action: 'login',
-      players: [@game.first_player.username, @game.second_player.username])
+      players: [@game.first_player.username, @game.second_player.username],
+      currentPlayer: @game.current_player.username)
   end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
     stop_all_streams
-    ActionCable.server.broadcast("game#{current_user.game_id}",
-      action: 'forfeit',
-      message: current_user.username)
+    forfeit
   end
 
   def play(data)
@@ -31,6 +30,12 @@ class GameChannel < ApplicationCable::Channel
       ActionCable.server.broadcast("game#{current_user.game_id}",
         action: 'Not your turn')
     end
+  end
+
+  def forfeit
+    ActionCable.server.broadcast("game#{current_user.game_id}",
+      action: 'forfeit',
+      message: current_user.username)
   end
 
   private

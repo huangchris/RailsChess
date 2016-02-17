@@ -8,7 +8,8 @@ function joinGame(reactGame){
       switch (data.action) {
         case 'login':
           // save the players to show names, figure out if you're white or black
-          reactGame.setState({players: data.players, currentPlayer: data.players[0]})
+          reactGame.setState({players: data.players, currentPlayer: data.currentPlayer})
+          reactGame.identifyColor();
           break;
         case 'play':
           // pass message on to wherever game state is being saved
@@ -17,7 +18,7 @@ function joinGame(reactGame){
         case 'forfeit':
           // if not self, say "You win!"
           if(data.message !== reactGame.props.name){
-            reactGame.setState({notifications: data.message + " has forfeited! You win!"})
+            reactGame.setState({notification: data.message + " has forfeited! You win!"})
           }
           break;
       }

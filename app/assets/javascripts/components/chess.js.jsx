@@ -37,7 +37,7 @@
           // this.props.board[toPos[0]][toPos[1]] = this.pieces[fromPos[0]][fromPos[1]];
           // this.pieces[fromPos[0]][fromPos[1]] = null;
           if(this.props.board[fromPos[0]][fromPos[1]].validMove(fromPos, toPos, this.props.board)){
-            this.props.channel.play({fromPos: fromPos, toPos: toPos})
+            this.props.play(fromPos, toPos)
           }else{
             console.log("invalid move");
           }
