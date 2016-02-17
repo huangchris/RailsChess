@@ -40,7 +40,7 @@ Rails.application.configure do
 
   # Action Cable endpoint configuration
   config.action_cable.url = 'wss://websocket-chess.herokuapp.com/cable'
-  config.action_cable.allowed_request_origins = [ 'http://websocket-chess.herokuapp.com', /http:\/\/herokuapp.*/ ]
+  config.action_cable.allowed_request_origins = [ 'http://websocket-chess.herokuapp.com', 'https://websocket-chess.herokuapp.com', /http:\/\/herokuapp.*/ ]
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
